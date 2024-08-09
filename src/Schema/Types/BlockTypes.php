@@ -43,6 +43,7 @@ class BlockTypes {
 		if ( isset( $attribute['type'] ) ) {
 			switch ( $attribute['type'] ) {
 				case 'string':
+				case 'rich-text':
 					$type = 'String';
 					break;
 				case 'boolean':
