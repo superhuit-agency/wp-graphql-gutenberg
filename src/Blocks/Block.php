@@ -93,7 +93,7 @@ class Block implements ArrayAccess {
 
 							$result[ $key ] = $value;
 						} else {
-							$result[ $key ] = $source_node->innerhtml;
+							$result[ $key ] = $source_node->outerhtml;
 						}
 					}
 
