@@ -68,6 +68,10 @@ class Block implements ArrayAccess {
 
 					break;
 				case 'html':
+				// core/html source was converted from html to raw which was introduced in WP 6.2
+				// https://github.com/WordPress/gutenberg/pull/27268
+				// https://github.com/WordPress/gutenberg/commit/97eb4a4db1b0f42ca77a1eff335b632584d11226#diff-2ca7aa3d7aa1e1b7045012c90de56f0caf6b1f4a0ac1bd501b0fb3c0c054aa2eR13
+				case 'raw':
 					$source_node = ! empty( $value['selector'] ) ? $node->findOne( $value['selector'] ) : $node;
 
 					if ( $source_node ) {
