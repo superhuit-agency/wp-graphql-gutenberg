@@ -19,9 +19,7 @@ class BlocksJSON {
 		return array_values(
 			array_unique(
 				array_filter(
-					array_map(function ( $property ) {
-						return trim( sanitize_text_field( $property ) );
-					}, $properties),
+					array_map(fn( $property ) => trim( sanitize_text_field( $property ) ), $properties),
 					function ( $property ) {
 						return '' !== $property;
 					}
