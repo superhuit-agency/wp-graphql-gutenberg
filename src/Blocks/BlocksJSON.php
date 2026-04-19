@@ -2,10 +2,6 @@
 
 namespace WPGraphQLGutenberg\Blocks;
 
-if ( ! defined( 'WP_GRAPHQL_GUTENBERG_BLOCKS_JSON_FILTERED_PROPERTIES_OPTION_NAME' ) ) {
-	define( 'WP_GRAPHQL_GUTENBERG_BLOCKS_JSON_FILTERED_PROPERTIES_OPTION_NAME', 'wp_graphql_gutenberg_blocks_json_filtered_properties' );
-}
-
 class BlocksJSON {
 	public static function sanitize_filtered_properties( $value ) {
 		$properties = [];
@@ -26,11 +22,6 @@ class BlocksJSON {
 				)
 			)
 		);
-	}
-
-	public static function get_filtered_properties() {
-		$value = get_option( WP_GRAPHQL_GUTENBERG_BLOCKS_JSON_FILTERED_PROPERTIES_OPTION_NAME, [] );
-		return self::sanitize_filtered_properties( $value );
 	}
 
 	public static function filter_properties( $value, $properties ) {
@@ -66,7 +57,7 @@ class BlocksJSON {
 	}
 
 	public static function encode_blocks( $blocks, $model ) {
-		$properties      = apply_filters( 'graphql_gutenberg_blocks_json_filtered_properties', self::get_filtered_properties(), $model, $blocks );
+		$properties      = apply_filters( 'graphql_gutenberg_blocks_json_filtered_properties', [], $model, $blocks );
 		$filtered_blocks = self::filter_properties( $blocks, self::sanitize_filtered_properties( $properties ) );
 
 		return wp_json_encode(
