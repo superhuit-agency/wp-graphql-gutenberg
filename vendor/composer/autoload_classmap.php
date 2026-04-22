@@ -119,6 +119,7 @@ return array(
     'WPGraphQLGutenberg\\Admin\\Editor' => $baseDir . '/src/Admin/Editor.php',
     'WPGraphQLGutenberg\\Admin\\Settings' => $baseDir . '/src/Admin/Settings.php',
     'WPGraphQLGutenberg\\Blocks\\Block' => $baseDir . '/src/Blocks/Block.php',
+    'WPGraphQLGutenberg\\Blocks\\BlocksJSON' => $baseDir . '/src/Blocks/BlocksJSON.php',
     'WPGraphQLGutenberg\\Blocks\\Registry' => $baseDir . '/src/Blocks/Registry.php',
     'WPGraphQLGutenberg\\Blocks\\RegistryNotSourcedException' => $baseDir . '/src/Blocks/RegistryNotSourcedException.php',
     'WPGraphQLGutenberg\\Blocks\\Utils' => $baseDir . '/src/Blocks/Utils.php',
