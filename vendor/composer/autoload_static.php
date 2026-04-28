@@ -19,10 +19,18 @@ class ComposerStaticInit1ae93f46350550e5030837be01a3fdf8
         array (
             'WPGraphqlGutenberg\\' => 19,
         ),
+        'V' => 
+        array (
+            'VariableAnalysis\\' => 17,
+        ),
         'S' => 
         array (
             'Symfony\\Polyfill\\Php80\\' => 23,
             'Symfony\\Component\\CssSelector\\' => 30,
+        ),
+        'P' => 
+        array (
+            'PHPCSStandards\\Composer\\Plugin\\Installers\\PHPCodeSniffer\\' => 57,
         ),
         'O' => 
         array (
@@ -39,6 +47,10 @@ class ComposerStaticInit1ae93f46350550e5030837be01a3fdf8
         array (
             0 => __DIR__ . '/../..' . '/src',
         ),
+        'VariableAnalysis\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/sirbrillig/phpcs-variable-analysis/VariableAnalysis',
+        ),
         'Symfony\\Polyfill\\Php80\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-php80',
@@ -46,6 +58,10 @@ class ComposerStaticInit1ae93f46350550e5030837be01a3fdf8
         'Symfony\\Component\\CssSelector\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/css-selector',
+        ),
+        'PHPCSStandards\\Composer\\Plugin\\Installers\\PHPCodeSniffer\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/dealerdirect/phpcodesniffer-composer-installer/src',
         ),
         'Opis\\JsonSchema\\' => 
         array (
@@ -110,6 +126,7 @@ class ComposerStaticInit1ae93f46350550e5030837be01a3fdf8
         'Opis\\JsonSchema\\ValidationResult' => __DIR__ . '/..' . '/opis/json-schema/src/ValidationResult.php',
         'Opis\\JsonSchema\\Validator' => __DIR__ . '/..' . '/opis/json-schema/src/Validator.php',
         'Opis\\JsonSchema\\ValidatorHelper' => __DIR__ . '/..' . '/opis/json-schema/src/ValidatorHelper.php',
+        'PHPCSStandards\\Composer\\Plugin\\Installers\\PHPCodeSniffer\\Plugin' => __DIR__ . '/..' . '/dealerdirect/phpcodesniffer-composer-installer/src/Plugin.php',
         'PhpToken' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/PhpToken.php',
         'Stringable' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Stringable.php',
         'Symfony\\Component\\CssSelector\\CssSelectorConverter' => __DIR__ . '/..' . '/symfony/css-selector/CssSelectorConverter.php',
@@ -164,6 +181,15 @@ class ComposerStaticInit1ae93f46350550e5030837be01a3fdf8
         'Symfony\\Polyfill\\Php80\\PhpToken' => __DIR__ . '/..' . '/symfony/polyfill-php80/PhpToken.php',
         'UnhandledMatchError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/UnhandledMatchError.php',
         'ValueError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/ValueError.php',
+        'VariableAnalysis\\Lib\\Constants' => __DIR__ . '/..' . '/sirbrillig/phpcs-variable-analysis/VariableAnalysis/Lib/Constants.php',
+        'VariableAnalysis\\Lib\\EnumInfo' => __DIR__ . '/..' . '/sirbrillig/phpcs-variable-analysis/VariableAnalysis/Lib/EnumInfo.php',
+        'VariableAnalysis\\Lib\\ForLoopInfo' => __DIR__ . '/..' . '/sirbrillig/phpcs-variable-analysis/VariableAnalysis/Lib/ForLoopInfo.php',
+        'VariableAnalysis\\Lib\\Helpers' => __DIR__ . '/..' . '/sirbrillig/phpcs-variable-analysis/VariableAnalysis/Lib/Helpers.php',
+        'VariableAnalysis\\Lib\\ScopeInfo' => __DIR__ . '/..' . '/sirbrillig/phpcs-variable-analysis/VariableAnalysis/Lib/ScopeInfo.php',
+        'VariableAnalysis\\Lib\\ScopeManager' => __DIR__ . '/..' . '/sirbrillig/phpcs-variable-analysis/VariableAnalysis/Lib/ScopeManager.php',
+        'VariableAnalysis\\Lib\\ScopeType' => __DIR__ . '/..' . '/sirbrillig/phpcs-variable-analysis/VariableAnalysis/Lib/ScopeType.php',
+        'VariableAnalysis\\Lib\\VariableInfo' => __DIR__ . '/..' . '/sirbrillig/phpcs-variable-analysis/VariableAnalysis/Lib/VariableInfo.php',
+        'VariableAnalysis\\Sniffs\\CodeAnalysis\\VariableAnalysisSniff' => __DIR__ . '/..' . '/sirbrillig/phpcs-variable-analysis/VariableAnalysis/Sniffs/CodeAnalysis/VariableAnalysisSniff.php',
         'WPGraphQLGutenberg\\Admin\\Editor' => __DIR__ . '/../..' . '/src/Admin/Editor.php',
         'WPGraphQLGutenberg\\Admin\\Settings' => __DIR__ . '/../..' . '/src/Admin/Settings.php',
         'WPGraphQLGutenberg\\Blocks\\Block' => __DIR__ . '/../..' . '/src/Blocks/Block.php',

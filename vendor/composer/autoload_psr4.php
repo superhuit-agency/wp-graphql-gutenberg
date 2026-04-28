@@ -8,7 +8,9 @@ $baseDir = dirname($vendorDir);
 return array(
     'voku\\helper\\' => array($vendorDir . '/voku/simple_html_dom/src/voku/helper'),
     'WPGraphqlGutenberg\\' => array($baseDir . '/src'),
+    'VariableAnalysis\\' => array($vendorDir . '/sirbrillig/phpcs-variable-analysis/VariableAnalysis'),
     'Symfony\\Polyfill\\Php80\\' => array($vendorDir . '/symfony/polyfill-php80'),
     'Symfony\\Component\\CssSelector\\' => array($vendorDir . '/symfony/css-selector'),
+    'PHPCSStandards\\Composer\\Plugin\\Installers\\PHPCodeSniffer\\' => array($vendorDir . '/dealerdirect/phpcodesniffer-composer-installer/src'),
     'Opis\\JsonSchema\\' => array($vendorDir . '/opis/json-schema/src'),
 );
