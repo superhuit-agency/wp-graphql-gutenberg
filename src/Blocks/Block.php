@@ -9,6 +9,20 @@ use Opis\JsonSchema\Validator;
 use voku\helper\HtmlDomParser;
 
 class Block implements ArrayAccess {
+	public array $innerBlocks;
+	public ?string $name;
+	public ?int $postId;
+	public mixed $blockType;
+	public ?string $originalContent;
+	public ?string $saveContent;
+	public ?int $order;
+	public mixed $parent;
+	public mixed $get_parent;
+	public array $attributes;
+	public mixed $attributesType;
+	public mixed $dynamicContent;
+
+
 	public static function create_blocks( $blocks, $post_id, $registry, $parent = null ) {
 		$result = [];
 		$order  = 0;
