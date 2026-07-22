@@ -153,6 +153,7 @@ return array(
     'voku\\helper\\AbstractSimpleXmlDom' => $vendorDir . '/voku/simple_html_dom/src/voku/helper/AbstractSimpleXmlDom.php',
     'voku\\helper\\AbstractSimpleXmlDomNode' => $vendorDir . '/voku/simple_html_dom/src/voku/helper/AbstractSimpleXmlDomNode.php',
     'voku\\helper\\DomParserInterface' => $vendorDir . '/voku/simple_html_dom/src/voku/helper/DomParserInterface.php',
+    'voku\\helper\\HtmlDomHelper' => $vendorDir . '/voku/simple_html_dom/src/voku/helper/HtmlDomHelper.php',
     'voku\\helper\\HtmlDomParser' => $vendorDir . '/voku/simple_html_dom/src/voku/helper/HtmlDomParser.php',
     'voku\\helper\\SelectorConverter' => $vendorDir . '/voku/simple_html_dom/src/voku/helper/SelectorConverter.php',
     'voku\\helper\\SimpleHtmlAttributes' => $vendorDir . '/voku/simple_html_dom/src/voku/helper/SimpleHtmlAttributes.php',
