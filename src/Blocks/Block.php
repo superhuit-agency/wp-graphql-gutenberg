@@ -250,11 +250,21 @@ class Block implements ArrayAccess {
 	 * Server side render the block on first access only, since rendering every
 	 * dynamic block up front is costly and renders inner blocks out of their
 	 * parent's context (e.g. Interactivity API namespaces).
+	 *
+	 * Inner blocks are rendered first, as the former eager rendering did, so
+	 * counter-based ids (e.g. `accordion-item-1`) do not depend on the order
+	 * of the fields in the query.
 	 */
 	public function get_dynamic_content() {
 		if ( ! $this->is_dynamic_content_rendered ) {
+			foreach ( $this->innerBlocks as $inner_block ) {
+				$inner_block->get_dynamic_content();
+			}
+
 			$this->dynamicContent              = $this->render_dynamic_content( $this->data );
 			$this->is_dynamic_content_rendered = true;
+			// The parsed block is only needed to render.
+			$this->data = [];
 		}
 
 		return $this->dynamicContent;

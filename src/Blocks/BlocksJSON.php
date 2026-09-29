@@ -43,6 +43,9 @@ class BlocksJSON {
 		}
 
 		if ( is_object( $value ) ) {
+			// Objects are passed by handle: clone so the caller's blocks stay unfiltered.
+			$value = clone $value;
+
 			foreach ( get_object_vars( $value ) as $key => $item ) {
 				if ( in_array( $key, $properties, true ) ) {
 					unset( $value->$key );
@@ -56,21 +59,15 @@ class BlocksJSON {
 		return $value;
 	}
 
-	public static function render_dynamic_contents( $blocks ) {
-		foreach ( $blocks as $block ) {
-			// Inner blocks first, keeping the render order (and generated ids) of eager rendering.
-			self::render_dynamic_contents( $block->innerBlocks );
-			$block->get_dynamic_content();
-		}
-	}
-
 	public static function encode_blocks( $blocks, $model ) {
 		$properties = self::sanitize_filtered_properties(
 			apply_filters( 'graphql_gutenberg_blocks_json_filtered_properties', [], $model, $blocks )
 		);
 
 		if ( ! in_array( 'dynamicContent', $properties, true ) ) {
-			self::render_dynamic_contents( $blocks );
+			foreach ( $blocks as $block ) {
+				$block->get_dynamic_content();
+			}
 		}
 
 		$filtered_blocks = self::filter_properties( $blocks, $properties );
