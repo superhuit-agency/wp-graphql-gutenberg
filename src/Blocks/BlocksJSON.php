@@ -56,9 +56,24 @@ class BlocksJSON {
 		return $value;
 	}
 
+	public static function render_dynamic_contents( $blocks ) {
+		foreach ( $blocks as $block ) {
+			// Inner blocks first, keeping the render order (and generated ids) of eager rendering.
+			self::render_dynamic_contents( $block->innerBlocks );
+			$block->get_dynamic_content();
+		}
+	}
+
 	public static function encode_blocks( $blocks, $model ) {
-		$properties      = apply_filters( 'graphql_gutenberg_blocks_json_filtered_properties', [], $model, $blocks );
-		$filtered_blocks = self::filter_properties( $blocks, self::sanitize_filtered_properties( $properties ) );
+		$properties = self::sanitize_filtered_properties(
+			apply_filters( 'graphql_gutenberg_blocks_json_filtered_properties', [], $model, $blocks )
+		);
+
+		if ( ! in_array( 'dynamicContent', $properties, true ) ) {
+			self::render_dynamic_contents( $blocks );
+		}
+
+		$filtered_blocks = self::filter_properties( $blocks, $properties );
 
 		return wp_json_encode(
 			apply_filters( 'graphql_gutenberg_blocks_json', $filtered_blocks, $model, $blocks )
