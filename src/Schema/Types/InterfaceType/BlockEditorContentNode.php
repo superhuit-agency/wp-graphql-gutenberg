@@ -33,14 +33,8 @@ class BlockEditorContentNode {
 			'blocksJSON'        => [
 				'type'        => 'String',
 				'description' => __( 'Gutenberg blocks as json string', 'wp-graphql-gutenberg' ),
-				'resolve'     => function ( $model, $args, $context, $info ) {
-					$blocks = Block::create_blocks(
-						parse_blocks( get_post( $model->ID )->post_content ),
-						$model->ID,
-						Registry::get_registry()
-					);
-
-					return BlocksJSON::encode_blocks( $blocks, $model );
+				'resolve'     => function ( $model ) {
+					return BlocksJSON::encode_post_blocks( $model->ID, $model );
 				},
 			],
 			'previewBlocks'     => [
@@ -75,14 +69,7 @@ class BlockEditorContentNode {
 						$id = BlockEditorPreview::get_preview_id( $model->ID, $model->ID );
 
 						if ( ! empty( $id ) ) {
-							return BlocksJSON::encode_blocks(
-								Block::create_blocks(
-									parse_blocks( get_post( $id )->post_content ),
-									$id,
-									Registry::get_registry()
-								),
-								$model
-							);
+							return BlocksJSON::encode_post_blocks( $id, $model );
 						}
 
 						return null;

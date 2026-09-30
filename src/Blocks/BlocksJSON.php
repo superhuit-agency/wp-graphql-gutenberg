@@ -59,6 +59,17 @@ class BlocksJSON {
 		return $value;
 	}
 
+	public static function encode_post_blocks( $post_id, $model ) {
+		return self::encode_blocks(
+			Block::create_blocks(
+				parse_blocks( get_post( $post_id )->post_content ),
+				$post_id,
+				Registry::get_registry()
+			),
+			$model
+		);
+	}
+
 	public static function encode_blocks( $blocks, $model ) {
 		$properties = self::sanitize_filtered_properties(
 			apply_filters( 'graphql_gutenberg_blocks_json_filtered_properties', [], $model, $blocks )
