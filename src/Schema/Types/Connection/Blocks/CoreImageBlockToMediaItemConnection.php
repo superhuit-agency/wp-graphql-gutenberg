@@ -2,8 +2,8 @@
 
 namespace WPGraphQLGutenberg\Schema\Types\Connection\Blocks;
 
-use \WPGraphQL\Model\Post;
-use \WPGraphQL\Data\Connection\PostObjectConnectionResolver;
+use WPGraphQL\Model\Post;
+use WPGraphQL\Data\Connection\PostObjectConnectionResolver;
 
 class CoreImageBlockToMediaItemConnection {
 	public function __construct() {

@@ -22,10 +22,18 @@
 		}
 	},
 	"require-dev": {
-	  "automattic/vipwpcs": "^2.2",
-	  "phpcompatibility/phpcompatibility-wp": "^2.1"
+	  "automattic/vipwpcs": "^3.0",
+	  "phpcompatibility/phpcompatibility-wp": "^2.1",
+	  "wp-coding-standards/wpcs": "^3.4.1",
+	  "squizlabs/php_codesniffer": "^3.13.6"
 	},
 	"scripts": {
+		"post-install-cmd": [
+			"@composer dump-autoload --no-dev"
+		],
+		"post-update-cmd": [
+			"@composer dump-autoload --no-dev"
+		],
 		"phpcs-i": [
 			"@php ./vendor/bin/phpcs -i"
 		],

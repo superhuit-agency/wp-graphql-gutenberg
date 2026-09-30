@@ -201,7 +201,6 @@ class BlockTypes {
 				'resolveType' => function ( $attributes ) use ( $types_by_definition ) {
 
 					return $types_by_definition[ wp_json_encode( $attributes['__type'] ) ];
-
 				},
 			]);
 
@@ -275,7 +274,6 @@ class BlockTypes {
 					return self::format_block_name( $block->name );
 				},
 			]);
-
 		});
 	}
 }
