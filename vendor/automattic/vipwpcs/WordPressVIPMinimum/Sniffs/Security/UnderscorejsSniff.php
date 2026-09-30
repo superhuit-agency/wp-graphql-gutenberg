@@ -4,17 +4,18 @@
  *
  * @package VIPCS\WordPressVIPMinimum
  * @link https://github.com/Automattic/VIP-Coding-Standards
+ * @license https://opensource.org/license/gpl-2-0 GPL-2.0
  */
 
 namespace WordPressVIPMinimum\Sniffs\Security;
 
 use PHP_CodeSniffer\Util\Tokens;
+use PHPCSUtils\Utils\FilePath;
+use PHPCSUtils\Utils\TextStrings;
 use WordPressVIPMinimum\Sniffs\Sniff;
 
 /**
  * Looks for instances of unescaped output for Underscore.js templating engine.
- *
- * @package VIPCS\WordPressVIPMinimum
  */
 class UnderscorejsSniff extends Sniff {
 
@@ -51,7 +52,7 @@ class UnderscorejsSniff extends Sniff {
 	/**
 	 * Returns an array of tokens this test wants to listen for.
 	 *
-	 * @return array
+	 * @return array<int|string>
 	 */
 	public function register() {
 		$targets   = Tokens::$textStringTokens;
@@ -72,7 +73,7 @@ class UnderscorejsSniff extends Sniff {
 		/*
 		 * Ignore Gruntfile.js files as they are configuration, not code.
 		 */
-		$file_name = $this->strip_quotes( $this->phpcsFile->getFileName() );
+		$file_name = FilePath::getName( $this->phpcsFile );
 		$file_name = strtolower( basename( $file_name ) );
 
 		if ( $file_name === 'gruntfile.js' ) {
@@ -120,7 +121,7 @@ class UnderscorejsSniff extends Sniff {
 			return;
 		}
 
-		$content = $this->strip_quotes( $this->tokens[ $stackPtr ]['content'] );
+		$content = TextStrings::stripQuotes( $this->tokens[ $stackPtr ]['content'] );
 
 		$match_count = preg_match_all( self::UNESCAPED_INTERPOLATE_REGEX, $content, $matches );
 		if ( $match_count > 0 ) {

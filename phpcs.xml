@@ -58,6 +58,8 @@
 
 	<rule ref="WordPress-Core">
 		<exclude name="Generic.Arrays.DisallowShortArraySyntax"/>
+		<!-- WPCS 3 name of the sniff above -->
+		<exclude name="Universal.Arrays.DisallowShortArraySyntax"/>
 
 		<!-- Should probably not be added back -->
 		<exclude name="PHPCompatibility.Keywords.ForbiddenNamesAsDeclared.objectFound"/>
@@ -84,6 +86,14 @@
 		<!-- Should probably not be added back -->
 		<exclude name="WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid"/>
 		<exclude name="WordPress.DateTime.RestrictedFunctions.date_date"/>
+
+		<!-- Added in WPCS 3 -->
+		<!-- Resolver and hook callbacks take the arguments WPGraphQL and WordPress pass, used or not -->
+		<exclude name="Generic.CodeAnalysis.UnusedFunctionParameter"/>
+		<!-- Capabilities come from the post type object, e.g. $cap->edit_posts -->
+		<exclude name="WordPress.WP.Capabilities.Undetermined"/>
+		<!-- Renaming the public $parent parameter would break named-argument callers -->
+		<exclude name="Universal.NamingConventions.NoReservedKeywordParameterNames.parentFound"/>
 	</rule>
 
 	<!-- Tests for inline documentation of code -->

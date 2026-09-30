@@ -4,17 +4,18 @@
  *
  * @package VIPCS\WordPressVIPMinimum
  * @link https://github.com/Automattic/VIP-Coding-Standards
+ * @license https://opensource.org/license/gpl-2-0 GPL-2.0
  * @license https://opensource.org/licenses/MIT MIT
  */
 
 namespace WordPressVIPMinimum\Sniffs;
 
+use WordPressCS\WordPress\Sniff as WPCS_Sniff;
+
 /**
  * Represents a WordPress\Sniff for sniffing VIP coding standards.
  *
  * Provides a bootstrap for the sniffs, to reduce code duplication.
- *
- * @package VIPCS\WordPressVIPMinimum
  */
-abstract class Sniff extends \WordPressCS\WordPress\Sniff {
+abstract class Sniff extends WPCS_Sniff {
 }

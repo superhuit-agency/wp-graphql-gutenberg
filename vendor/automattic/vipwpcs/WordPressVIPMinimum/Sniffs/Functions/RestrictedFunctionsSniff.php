@@ -3,24 +3,24 @@
  * WordPressVIPMinimum Coding Standard.
  *
  * @package VIPCS\WordPressVIPMinimum
+ * @link https://github.com/Automattic/VIP-Coding-Standards
+ * @license https://opensource.org/license/gpl-2-0 GPL-2.0
  */
 
 namespace WordPressVIPMinimum\Sniffs\Functions;
 
-use WordPressCS\WordPress\AbstractFunctionRestrictionsSniff;
 use PHP_CodeSniffer\Util\Tokens;
+use WordPressCS\WordPress\AbstractFunctionRestrictionsSniff;
 
 /**
  * Restricts usage of some functions in VIP context.
- *
- * @package VIPCS\WordPressVIPMinimum
  */
 class RestrictedFunctionsSniff extends AbstractFunctionRestrictionsSniff {
 
 	/**
 	 * Groups of functions to restrict.
 	 *
-	 * @return array
+	 * @return array<string, array<string, string|array<string>|array<string, bool>>>
 	 */
 	public function getGroups() {
 
@@ -82,13 +82,6 @@ class RestrictedFunctionsSniff extends AbstractFunctionRestrictionsSniff {
 					'switch_to_blog',
 				],
 			],
-			'get_page_by_title' => [
-				'type'      => 'error',
-				'message'   => '%s() is prohibited, please use wpcom_vip_get_page_by_title() instead.',
-				'functions' => [
-					'get_page_by_title',
-				],
-			],
 			'url_to_postid' => [
 				'type'      => 'error',
 				'message'   => '%s() is prohibited, please use wpcom_vip_url_to_postid() instead.',
@@ -102,13 +95,6 @@ class RestrictedFunctionsSniff extends AbstractFunctionRestrictionsSniff {
 				'message'   => 'Use wpcom_vip_add_role() instead of %s().',
 				'functions' => [
 					'add_role',
-				],
-			],
-			'term_exists' => [
-				'type'      => 'error',
-				'message'   => '%s() is highly discouraged due to not being cached; please use wpcom_vip_term_exists() instead.',
-				'functions' => [
-					'term_exists',
 				],
 			],
 			'count_user_posts' => [
@@ -285,13 +271,6 @@ class RestrictedFunctionsSniff extends AbstractFunctionRestrictionsSniff {
 					'create_function',
 				],
 			],
-			'get_page_by_path' => [
-				'type'      => 'warning',
-				'message'   => '%s() is highly discouraged due to not being cached; please use wpcom_vip_get_page_by_path() instead.',
-				'functions' => [
-					'get_page_by_path',
-				],
-			],
 		];
 
 		$deprecated_vip_helpers = [
@@ -324,47 +303,27 @@ class RestrictedFunctionsSniff extends AbstractFunctionRestrictionsSniff {
 	 * @return bool
 	 */
 	public function is_targetted_token( $stackPtr ) {
-		// Exclude function definitions, class methods, and namespaced calls.
-		if ( $this->tokens[ $stackPtr ]['code'] === \T_STRING && isset( $this->tokens[ $stackPtr - 1 ] ) ) {
-			// Check if this is really a function.
-			$next = $this->phpcsFile->findNext( Tokens::$emptyTokens, $stackPtr + 1, null, true );
-			if ( $next !== false && $this->tokens[ $next ]['code'] !== T_OPEN_PARENTHESIS ) {
-				return false;
-			}
-
-			$prev = $this->phpcsFile->findPrevious( Tokens::$emptyTokens, $stackPtr - 1, null, true );
-			if ( $prev !== false ) {
-
-				// Start difference to parent class method.
-				// Check to see if function is a method on a specific object variable.
-				if ( ! empty( $this->groups[ $this->tokens[ $stackPtr ]['content'] ]['object_var'] ) ) {
-					$prevPrev = $this->phpcsFile->findPrevious( Tokens::$emptyTokens, $stackPtr - 2, null, true );
-
-					return $this->tokens[ $prev ]['code'] === \T_OBJECT_OPERATOR && isset( $this->groups[ $this->tokens[ $stackPtr ]['content'] ]['object_var'][ $this->tokens[ $prevPrev ]['content'] ] );
-				} // End difference to parent class method.
-
-				// Skip sniffing if calling a same-named method, or on function definitions.
-				$skipped = [
-					\T_FUNCTION        => \T_FUNCTION,
-					\T_CLASS           => \T_CLASS,
-					\T_AS              => \T_AS, // Use declaration alias.
-					\T_DOUBLE_COLON    => \T_DOUBLE_COLON,
-					\T_OBJECT_OPERATOR => \T_OBJECT_OPERATOR,
-					\T_NEW             => \T_NEW,
-				];
-				if ( isset( $skipped[ $this->tokens[ $prev ]['code'] ] ) ) {
-					return false;
-				}
-				// Skip namespaced functions, ie: `\foo\bar()` not `\bar()`.
-				if ( $this->tokens[ $prev ]['code'] === \T_NS_SEPARATOR ) {
-					$pprev = $this->phpcsFile->findPrevious( Tokens::$emptyTokens, $prev - 1, null, true );
-					if ( $pprev !== false && $this->tokens[ $pprev ]['code'] === \T_STRING ) {
-						return false;
-					}
-				}
-			}
-			return true;
+		if ( empty( $this->groups[ $this->tokens[ $stackPtr ]['content'] ]['object_var'] ) ) {
+			return parent::is_targetted_token( $stackPtr );
 		}
-		return false;
+
+		// Start difference to parent class method.
+		// Check to see if the token is a method call on a specific object variable.
+		$next = $this->phpcsFile->findNext( Tokens::$emptyTokens, $stackPtr + 1, null, true );
+		if ( $next === false || $this->tokens[ $next ]['code'] !== T_OPEN_PARENTHESIS ) {
+			return false;
+		}
+
+		$prev = $this->phpcsFile->findPrevious( Tokens::$emptyTokens, $stackPtr - 1, null, true );
+		if ( $this->tokens[ $prev ]['code'] !== T_OBJECT_OPERATOR
+			&& $this->tokens[ $prev ]['code'] !== T_NULLSAFE_OBJECT_OPERATOR
+		) {
+			return false;
+		}
+
+		$prevPrev = $this->phpcsFile->findPrevious( Tokens::$emptyTokens, $prev - 1, null, true );
+
+		return $this->tokens[ $prevPrev ]['code'] === T_VARIABLE
+			&& isset( $this->groups[ $this->tokens[ $stackPtr ]['content'] ]['object_var'][ $this->tokens[ $prevPrev ]['content'] ] );
 	}
 }

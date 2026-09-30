@@ -1,21 +1,22 @@
 <?php
 /**
- * WordPressVIPMinimum_Sniffs_Files_IncludingNonPHPFileSniff.
+ * WordPressVIPMinimum Coding Standard.
  *
  * @package VIPCS\WordPressVIPMinimum
+ * @link https://github.com/Automattic/VIP-Coding-Standards
+ * @license https://opensource.org/license/gpl-2-0 GPL-2.0
  */
 
 namespace WordPressVIPMinimum\Sniffs\Files;
 
-use WordPressVIPMinimum\Sniffs\Sniff;
 use PHP_CodeSniffer\Util\Tokens;
+use PHPCSUtils\BackCompat\BCFile;
+use WordPressVIPMinimum\Sniffs\Sniff;
 
 /**
  * Ensure that non-PHP files are included via `file_get_contents()` instead of using `include/require[_once]`.
  *
  * This prevents potential PHP code embedded in those files from being automatically executed.
- *
- * @package VIPCS\WordPressVIPMinimum
  */
 class IncludingNonPHPFileSniff extends Sniff {
 
@@ -24,7 +25,7 @@ class IncludingNonPHPFileSniff extends Sniff {
 	 *
 	 * Files with these extensions are allowed to be `include`d.
 	 *
-	 * @var array Key is the extension, value is irrelevant.
+	 * @var array<string, bool> Key is the extension, value is irrelevant.
 	 */
 	private $php_extensions = [
 		'php'  => true,
@@ -35,7 +36,7 @@ class IncludingNonPHPFileSniff extends Sniff {
 	/**
 	 * File extensions used for SVG and CSS files.
 	 *
-	 * @var array Key is the extension, value is irrelevant.
+	 * @var array<string, bool> Key is the extension, value is irrelevant.
 	 */
 	private $svg_css_extensions = [
 		'css' => true,
@@ -45,7 +46,7 @@ class IncludingNonPHPFileSniff extends Sniff {
 	/**
 	 * Returns an array of tokens this test wants to listen for.
 	 *
-	 * @return array
+	 * @return array<int|string>
 	 */
 	public function register() {
 		return Tokens::$includeTokens;
@@ -59,7 +60,7 @@ class IncludingNonPHPFileSniff extends Sniff {
 	 * @return void
 	 */
 	public function process_token( $stackPtr ) {
-		$end_of_statement = $this->phpcsFile->findEndOfStatement( $stackPtr );
+		$end_of_statement = BCFile::findEndOfStatement( $this->phpcsFile, $stackPtr );
 		$curStackPtr      = ( $end_of_statement + 1 );
 
 		do {

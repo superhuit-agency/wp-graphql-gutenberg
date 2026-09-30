@@ -3,26 +3,27 @@
  * WordPressVIPMinimum Coding Standard.
  *
  * @package VIPCS\WordPressVIPMinimum
+ * @link https://github.com/Automattic/VIP-Coding-Standards
+ * @license https://opensource.org/license/gpl-2-0 GPL-2.0
  */
 
 namespace WordPressVIPMinimum\Sniffs\Hooks;
 
-use WordPressVIPMinimum\Sniffs\Sniff;
 use PHP_CodeSniffer\Util\Tokens;
+use PHPCSUtils\Utils\Arrays;
+use WordPressVIPMinimum\Sniffs\Sniff;
 
 /**
  * This sniff validates a proper usage of pre_get_posts action callback.
  *
  * It looks for cases when the WP_Query object is being modified without checking for WP_Query::is_main_query().
- *
- * @package VIPCS\WordPressVIPMinimum
  */
 class PreGetPostsSniff extends Sniff {
 
 	/**
 	 * Returns the token types that this sniff is interested in.
 	 *
-	 * @return array(int)
+	 * @return array<int|string>
 	 */
 	public function register() {
 		return [ T_STRING ];
@@ -77,7 +78,7 @@ class PreGetPostsSniff extends Sniff {
 			return;
 		}
 
-		if ( $this->tokens[ $callbackPtr ]['code'] === 'PHPCS_T_CLOSURE' ) {
+		if ( $this->tokens[ $callbackPtr ]['code'] === T_CLOSURE ) {
 			$this->processClosure( $callbackPtr );
 		} elseif ( $this->tokens[ $callbackPtr ]['code'] === T_ARRAY
 			|| $this->tokens[ $callbackPtr ]['code'] === T_OPEN_SHORT_ARRAY
@@ -97,7 +98,7 @@ class PreGetPostsSniff extends Sniff {
 	 */
 	private function processArray( $stackPtr ) {
 
-		$open_close = $this->find_array_open_close( $stackPtr );
+		$open_close = Arrays::getOpenClose( $this->phpcsFile, $stackPtr );
 		if ( $open_close === false ) {
 			return;
 		}
@@ -389,7 +390,7 @@ class PreGetPostsSniff extends Sniff {
 			true
 		);
 
-		if ( ! $next || $this->tokens[ $next ]['type'] !== 'T_OBJECT_OPERATOR' ) {
+		if ( ! $next || $this->tokens[ $next ]['code'] !== T_OBJECT_OPERATOR ) {
 			return false;
 		}
 

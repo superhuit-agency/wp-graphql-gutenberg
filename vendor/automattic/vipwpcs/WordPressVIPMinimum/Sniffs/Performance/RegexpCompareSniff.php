@@ -3,23 +3,24 @@
  * WordPressVIPMinimum Coding Standard.
  *
  * @package VIPCS\WordPressVIPMinimum
+ * @link https://github.com/Automattic/VIP-Coding-Standards
+ * @license https://opensource.org/license/gpl-2-0 GPL-2.0
  */
 
 namespace WordPressVIPMinimum\Sniffs\Performance;
 
+use PHPCSUtils\Utils\TextStrings;
 use WordPressCS\WordPress\AbstractArrayAssignmentRestrictionsSniff;
 
 /**
  * Flag REGEXP and NOT REGEXP in meta compare
- *
- *  @package VIPCS\WordPressVIPMinimum
  */
 class RegexpCompareSniff extends AbstractArrayAssignmentRestrictionsSniff {
 
 	/**
 	 * Groups of variables to restrict.
 	 *
-	 * @return array
+	 * @return array<string, array<string, string|array<string>>>
 	 */
 	public function getGroups() {
 		return [
@@ -45,6 +46,7 @@ class RegexpCompareSniff extends AbstractArrayAssignmentRestrictionsSniff {
 	 * @return bool FALSE if no match, TRUE if matches.
 	 */
 	public function callback( $key, $val, $line, $group ) {
+		$val = TextStrings::stripQuotes( $val );
 		return ( strpos( $val, 'NOT REGEXP' ) === 0
 			|| strpos( $val, 'REGEXP' ) === 0
 		);

@@ -4,6 +4,176 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.0] - 2026-07-27
+
+Props: @GaryJones, @jrfnl, @mahangu, @mchanDev, @mujuonly, @rebeccahum
+
+This release raises the minimum requirements and reworks a large number of the VIPCS sniffs.
+
+The minimum [WordPressCS](https://github.com/WordPress/WordPress-Coding-Standards/releases/tag/3.4.1) requirement is raised to 3.4.1 (from 3.2.0) — a security release which also brings numerous accuracy improvements to sniffs that VIPCS bundles — along with PHP_CodeSniffer 3.13.5, PHPCSUtils 1.2.3, PHPCSExtra 1.5.1 and VariableAnalysis 2.13.0. The minimum PHP version is now 7.4. Many sniffs have been reworked to fix false positives, add support for modern PHP syntaxes and adopt PHPCSUtils. The JavaScript-specific sniffs and the `DynamicCalls` sniff have been hard-deprecated ahead of their removal in 4.0.0, and the unused `Security.Twig` sniff has been removed.
+
+Please ensure you run `composer update automattic/vipwpcs --with-dependencies` to benefit from this.
+
+### Added
+- [#882](https://github.com/Automattic/VIP-Coding-Standards/pull/882): Performance/NoPaging: flag `posts_per_page` and `numberposts` set to `-1` (WordPress' "no limit" value), which previously slipped past the WPCS `> 100` check.
+- [#883](https://github.com/Automattic/VIP-Coding-Standards/pull/883): Hooks/AlwaysReturnInFilter: `exit`, `die` or `throw` in a filter callback now raises a dedicated `TerminatingInsteadOfReturn` warning, instead of the generic `MissingReturnStatement` error.
+- [#890](https://github.com/Automattic/VIP-Coding-Standards/pull/890): Add a Byte Order Mark (BOM) check to the `WordPressVIPMinimum` ruleset.
+
+### Changed
+- [#824](https://github.com/Automattic/VIP-Coding-Standards/pull/824): Disable `WordPress.Security.EscapeOutput.ExceptionNotEscaped` in the `WordPressVIPMinimum` ruleset, as throwing an exception with a translated message triggered it and the check is considered controversial.
+- [#854](https://github.com/Automattic/VIP-Coding-Standards/pull/854): Functions/StripTags: always flag use of `strip_tags()`, as the function should never be used on the VIP platform.
+- As VIPCS bundles a number of WordPressCS sniffs and the minimum WordPressCS version has been raised to 3.4.1, users will now receive more accurate results from the following WPCS sniffs (see the [WordPressCS 3.3.0](https://github.com/WordPress/WordPress-Coding-Standards/releases/tag/3.3.0), [3.4.0](https://github.com/WordPress/WordPress-Coding-Standards/releases/tag/3.4.0) and [3.4.1](https://github.com/WordPress/WordPress-Coding-Standards/releases/tag/3.4.1) release notes for full details):
+    * `WordPress.DB.DirectDatabaseQuery`: recognises more caching functions (such as the `wp_cache_*_multiple()` and `wp_cache_*_salted()` functions), and has fewer false positives when caching functions are called using a non-canonical function name.
+    * `WordPress.DB.PreparedSQL`: fewer false positives for correctly escaped SQL called using a non-canonical function name, and for static method calls to a non-global class named `wpdb`.
+    * `WordPress.Security.EscapeOutput`: adds support for attributes on anonymous classes (PHP 8.0), `readonly` anonymous classes (PHP 8.3) and `exit` as a function call (PHP 8.4); expands `*::class` false-positive protection; fixes false positives/negatives for `get_search_query()` and `_deprecated_file()` used with non-standard casing; and no longer treats `wp_kses_allowed_html()` as an escaping function, which may surface a new warning where that function's return value was being output directly.
+    * `WordPress.Security.NonceVerification`: fewer false positives when the nonce-checking function is called using a non-canonical function name.
+    * `WordPress.Security.ValidatedSanitizedInput`: clearer error message for the `InputNotValidated` error code.
+    * `WordPress.WP.AlternativeFunctions`: fixes a false negative when class members share a name with select global WP functions/constants, and a false positive for the fully qualified stream constants `\STDIN`, `\STDOUT` and `\STDERR`.
+    * `WordPress.WP.CronInterval`: fixes a false positive when the callback reference used a different case to the function declaration.
+
+### Deprecated
+- [#839](https://github.com/Automattic/VIP-Coding-Standards/pull/839): Hard-deprecate all JavaScript-specific sniffs (`WordPressVIPMinimum.JS.*`). They are excluded from the rulesets and will be removed in VIPCS 4.0.0.
+- [#865](https://github.com/Automattic/VIP-Coding-Standards/pull/865): Hard-deprecate the `WordPressVIPMinimum.Functions.DynamicCalls` sniff. It is excluded from the rulesets and will be removed in VIPCS 4.0.0.
+
+### Removed
+- [#864](https://github.com/Automattic/VIP-Coding-Standards/pull/864): Remove the unused `WordPressVIPMinimum.Security.Twig` sniff.
+
+### Fixed
+- [#840](https://github.com/Automattic/VIP-Coding-Standards/pull/840): Fix dangerous comparisons against the value of token constants.
+- [#842](https://github.com/Automattic/VIP-Coding-Standards/pull/842): Security/Mustache: fix potential false positives on a delimiter change, and examine double-quoted strings with interpolation and nowdocs which were previously skipped.
+- [#846](https://github.com/Automattic/VIP-Coding-Standards/pull/846), [#848](https://github.com/Automattic/VIP-Coding-Standards/pull/848): Security/PHPFilterFunctions: fix false positives for method calls, namespaced function calls and attributes which share the function name.
+- [#847](https://github.com/Automattic/VIP-Coding-Standards/pull/847): Security/StaticStrreplace: fix flawed detection of `str_replace()` by extending the WordPressCS `AbstractFunctionParameterSniff`; method calls, namespaced calls, first-class callables and argument unpacking are no longer flagged.
+- [#850](https://github.com/Automattic/VIP-Coding-Standards/pull/850): Variables/ServerVariables: fix incorrect quote stripping and expand safeguards against false positives.
+- [#851](https://github.com/Automattic/VIP-Coding-Standards/pull/851): Constants/ConstantString: fix flawed detection of `define()`/`defined()` by extending `AbstractFunctionParameterSniff`, and clarify the error message.
+- [#852](https://github.com/Automattic/VIP-Coding-Standards/pull/852): Hooks/RestrictedHooks: fix false positives (method/namespaced calls, first-class callables, attributes) and disregard comments in the hook-name parameter.
+- [#853](https://github.com/Automattic/VIP-Coding-Standards/pull/853): Performance/LowExpiryCacheTime: avoid a possible fatal error when a PHP 7.4+ numeric literal or 8.1+ octal literal is used as the cache time.
+- [#855](https://github.com/Automattic/VIP-Coding-Standards/pull/855): Performance/FetchingRemoteData: fix flawed function-call detection by extending `AbstractFunctionParameterSniff`.
+- [#858](https://github.com/Automattic/VIP-Coding-Standards/pull/858): Classes/DeclarationCompatibility: modernise and fix the sniff.
+- [#861](https://github.com/Automattic/VIP-Coding-Standards/pull/861): Security/EscapingVoidReturnFunctions: fix flawed detection of `esc_*()`/`wp_kses*()` calls by extending `AbstractFunctionParameterSniff`; safeguard argument unpacking, attributes and first-class callables.
+- [#862](https://github.com/Automattic/VIP-Coding-Standards/pull/862): Functions/DynamicCalls: fix end-of-statement determination and other minor issues.
+- [#866](https://github.com/Automattic/VIP-Coding-Standards/pull/866): UserExperience/AdminBarRemoval: several fixes — case-insensitive function-name matching, recognise `add_action()` as an alias, disregard comments in parameters, and no longer treat a CSS file as PHP; plus PHP 8.0+ function-call and 8.1+ first-class-callable support.
+- [#867](https://github.com/Automattic/VIP-Coding-Standards/pull/867): Performance/CacheValueOverride: fix false negatives for fully qualified calls and false positives for PHP 8.1+ first-class callables and variables.
+- [#869](https://github.com/Automattic/VIP-Coding-Standards/pull/869): Constants/RestrictedConstants: fix a nonsensical comparison and use PHPCSUtils for quote stripping.
+- [#872](https://github.com/Automattic/VIP-Coding-Standards/pull/872): Performance/TaxonomyMetaInOptions: extend `AbstractFunctionParameterSniff` and add PHP 8.0+ function-call and nullsafe-operator support.
+- [#881](https://github.com/Automattic/VIP-Coding-Standards/pull/881): Hooks/AlwaysReturnInFilter: resolve bugs and adopt PHPCSUtils.
+
+### Security
+- [WordPressCS 3.4.1](https://github.com/WordPress/WordPress-Coding-Standards/security/advisories/GHSA-3pwp-g2mj-5p3v) fixes a vulnerability in the `WordPress.WP.EnqueuedResourceParameters` sniff whereby running it over untrusted code could lead to arbitrary command execution on the scanning host. The VIPCS rulesets do not enable that sniff, so VIPCS' own behaviour is unaffected, but raising the minimum WordPressCS version removes the affected releases from the dependency tree and protects users who additionally run the `WordPress` or `WordPress-Extra` standards.
+
+### Maintenance
+- Composer:
+    * [#857](https://github.com/Automattic/VIP-Coding-Standards/pull/857): Raise the minimum supported versions of all coding-standard dependencies. This release requires WordPressCS 3.4.1, PHP_CodeSniffer 3.13.5, PHPCSUtils 1.2.3, PHPCSExtra 1.5.1 and VariableAnalysis 2.13.0.
+    * [#828](https://github.com/Automattic/VIP-Coding-Standards/pull/828): Prevent a `composer.lock` file from being created.
+    * [#837](https://github.com/Automattic/VIP-Coding-Standards/pull/837): Bump the PHP Parallel Lint requirement.
+- [#880](https://github.com/Automattic/VIP-Coding-Standards/pull/880): Bump the minimum PHP version to 7.4, drop PHPUnit 8 support and fix CI.
+- Rulesets:
+    * [#835](https://github.com/Automattic/VIP-Coding-Standards/pull/835): Update the schema URL.
+    * [#860](https://github.com/Automattic/VIP-Coding-Standards/pull/860): Fix unescaped special characters in the `include`/`exclude` patterns.
+- Sniffs:
+    * [#843](https://github.com/Automattic/VIP-Coding-Standards/pull/843): Fix license information and standardise the file docblocks.
+    * [#844](https://github.com/Automattic/VIP-Coding-Standards/pull/844): Remove `@since` tags which relate to WordPressCS.
+    * [#856](https://github.com/Automattic/VIP-Coding-Standards/pull/856): Classes/RestrictedExtendClasses: only listen for the `extends` keyword, significantly improving performance, and add tests.
+    * [#863](https://github.com/Automattic/VIP-Coding-Standards/pull/863): Functions/RestrictedFunctions: improve the `is_targetted_token()` method.
+    * [#868](https://github.com/Automattic/VIP-Coding-Standards/pull/868): Security/Underscorejs: start using the PHPCSUtils `FilePath` utility.
+    * [#870](https://github.com/Automattic/VIP-Coding-Standards/pull/870): Various minor CS fixes.
+- Docs:
+    * [#826](https://github.com/Automattic/VIP-Coding-Standards/pull/826): Improve consistency and specificity.
+    * [#871](https://github.com/Automattic/VIP-Coding-Standards/pull/871): Various minor fixes.
+    * [#875](https://github.com/Automattic/VIP-Coding-Standards/pull/875): Performance/WPQueryParams: update a documentation link.
+    * Update the minimum requirements in the `README`.
+- QA:
+    * [#825](https://github.com/Automattic/VIP-Coding-Standards/pull/825): Fix the PHPStan build.
+    * [#834](https://github.com/Automattic/VIP-Coding-Standards/pull/834): Silence a deprecation notice during the CS run.
+    * [#845](https://github.com/Automattic/VIP-Coding-Standards/pull/845): Fix the PHPCompatibility exclusions in the internal ruleset.
+    * Align the PHPCompatibility `testVersion` with the PHP 7.4 minimum requirement.
+- Tests:
+    * [#833](https://github.com/Automattic/VIP-Coding-Standards/pull/833): Fix `RulesetTest`.
+    * [#838](https://github.com/Automattic/VIP-Coding-Standards/pull/838): Remove a PHPCS version toggle from `AlwaysReturnInFilterUnitTest`.
+    * [#890](https://github.com/Automattic/VIP-Coding-Standards/pull/890): Refactor the tests and test runner, and preserve/handle a BOM in the ruleset-test fixtures.
+- GitHub Actions:
+    * [#827](https://github.com/Automattic/VIP-Coding-Standards/pull/827): Always quote variables.
+    * [#829](https://github.com/Automattic/VIP-Coding-Standards/pull/829): Run against PHP 8.4.
+    * [#830](https://github.com/Automattic/VIP-Coding-Standards/pull/830): Use the `xmllint-validate` action runner and add extra checks.
+    * [#884](https://github.com/Automattic/VIP-Coding-Standards/pull/884), [#887](https://github.com/Automattic/VIP-Coding-Standards/pull/887): Pin third-party GitHub Actions to commit SHAs.
+    * [#877](https://github.com/Automattic/VIP-Coding-Standards/pull/877), [#879](https://github.com/Automattic/VIP-Coding-Standards/pull/879), [#885](https://github.com/Automattic/VIP-Coding-Standards/pull/885), [#888](https://github.com/Automattic/VIP-Coding-Standards/pull/888), [#889](https://github.com/Automattic/VIP-Coding-Standards/pull/889): Dependency updates via Dependabot.
+
+## [3.0.1] - 2024-05-14
+
+Props: @GaryJones, @jrnfl, @terriann, @rebeccahum
+
+Increases requirements for PHPCS from 3.7.2 to 3.9.2 for improved PHP 8.2 and PHP 8.3 support. Please ensure you run `composer update automattic/vipwpcs --with-dependencies` to benefit from this.
+
+### Removed
+- Functions/RestrictedFunctions:
+    * [#812](https://github.com/Automattic/VIP-Coding-Standards/pull/812): Remove restricting `term_exists()`.
+    * [#814](https://github.com/Automattic/VIP-Coding-Standards/pull/814): Remove restricting `get_page_by_title()`.
+    * [#817](https://github.com/Automattic/VIP-Coding-Standards/pull/817): Remove restricting `get_page_by_path()`.
+
+### Changed
+- [#799](https://github.com/Automattic/VIP-Coding-Standards/pull/799): Classes/DeclarationCompatibility: Sync signature definitions with WP Core.
+
+### Maintenance
+- [#797](https://github.com/Automattic/VIP-Coding-Standards/pull/797): GH: Add initial dependabot config file.
+- GH Actions:
+    * [#798](https://github.com/Automattic/VIP-Coding-Standards/pull/798): Bump actions/checkout to 4 from 3.
+    * [#802](https://github.com/Automattic/VIP-Coding-Standards/pull/802): Minor tweaks of updating an incorrect URL and adding names to steps.
+    * [#803](https://github.com/Automattic/VIP-Coding-Standards/pull/802): Builds against PHP 8.3 can no longer fail, but 8.4 can.
+    * [#818](https://github.com/Automattic/VIP-Coding-Standards/pull/818): Add workaround for intermittent `apt-get update` issue.
+- Composer:
+    * [#805](https://github.com/Automattic/VIP-Coding-Standards/pull/805): Raise minimum version for better PHP 8.2 support.
+    * [#805](https://github.com/Automattic/VIP-Coding-Standards/pull/805): Up the minimum PHPCSExtra version to 1.2.1.
+    * [#821](https://github.com/Automattic/VIP-Coding-Standards/pull/821): Up the minimum PHPCSUtils version to 1.0.11.
+    * [#821](https://github.com/Automattic/VIP-Coding-Standards/pull/821): Up the minimum PHPCS version to 3.9.2.
+    * [#821](https://github.com/Automattic/VIP-Coding-Standards/pull/821): Up the minimum WPCS version to 3.1.0.
+    * [#821](https://github.com/Automattic/VIP-Coding-Standards/pull/821): Up the minimum PHPCSVariableAnalysis version to 2.11.18.
+- Docs:
+    * [#805](https://github.com/Automattic/VIP-Coding-Standards/pull/805): Update references to PHPCS under PHPCSStandards, as squizlabs version is abandoned.
+    * [#808](https://github.com/Automattic/VIP-Coding-Standards/pull/808): Update Composer installation instructions.
+    * [#811](https://github.com/Automattic/VIP-Coding-Standards/pull/811): Update old URLs.
+- [#809](https://github.com/Automattic/VIP-Coding-Standards/pull/809): Unit tests: Allow for PHPUnit 8 and 9.
+
+## [3.0.0] - 2023-09-05
+
+Props: @GaryJones, @jrfnl
+
+This release requires [WordPressCS 3.0.0](https://github.com/WordPress/WordPress-Coding-Standards/releases/tag/3.0.0). It is not compatible with WordPressCS 2.x. Users should read the [WordPressCS 3.0 upgrade guide for end-users](https://github.com/WordPress/WordPress-Coding-Standards/wiki/Upgrade-Guide-to-WordPressCS-3.0.0-for-ruleset-maintainers).
+
+Increases requirements for PHPCS from 3.7.1 to 3.7.2.
+
+The tagged releases branch is now `main` instead of `master`.
+
+### Added
+- [#777](https://github.com/Automattic/VIP-Coding-Standards/pull/777): 3.0: start using PHPCSUtils.
+- [#779](https://github.com/Automattic/VIP-Coding-Standards/pull/779): 3.0: support WordPressCS 3.0.
+
+### Changed
+- [#780](https://github.com/Automattic/VIP-Coding-Standards/pull/780): Performance/WPQueryParams: defer to the parent sniff.
+  - Two error codes changed:
+    - `WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn` is now `WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_post__not_in`.
+    - `WordPressVIPMinimum.Performance.WPQueryParams.SuppressFiltersTrue` is now `WordPressVIPMinimum.Performance.WPQueryParams.SuppressFilters_suppress_filters`.
+
+### Removed
+- [#774](https://github.com/Automattic/VIP-Coding-Standards/pull/774): Performance/BatcacheWhitelistedParams: remove the sniff.
+- [#775](https://github.com/Automattic/VIP-Coding-Standards/pull/775): Compatibility/Zoninator: remove the sniff.
+- [#776](https://github.com/Automattic/VIP-Coding-Standards/pull/776): Variables/VariableAnalysis: remove the sniff.
+
+### Fixed
+- [#784](https://github.com/Automattic/VIP-Coding-Standards/pull/784): Performance/WPQueryParams: prevent false positives for `'exclude'` with `get_users()`.
+- [#788](https://github.com/Automattic/VIP-Coding-Standards/pull/788): Security/Mustache: prevent false positives on block editor templates.
+
+### Maintenance
+- [#778](https://github.com/Automattic/VIP-Coding-Standards/pull/778): CS: improve use statements.
+- [#781](https://github.com/Automattic/VIP-Coding-Standards/pull/781): Performance/NoPaging: add extra tests.
+- [#782](https://github.com/Automattic/VIP-Coding-Standards/pull/782): GH Actions: minor tweaks to the composer options used.
+- [#783](https://github.com/Automattic/VIP-Coding-Standards/pull/783): Hooks/AlwaysReturnInFilter: remove redundant condition.
+- [#785](https://github.com/Automattic/VIP-Coding-Standards/pull/785): Docs: remove redundant `@package` tags.
+- [#786](https://github.com/Automattic/VIP-Coding-Standards/pull/786): Add PHPStan to QA checks.
+- [#787](https://github.com/Automattic/VIP-Coding-Standards/pull/787): GH Actions: tweak the way the PHPCS/WPCS versions are set.
+- [#789](https://github.com/Automattic/VIP-Coding-Standards/pull/789): Updates related to branch rename from `master` to `main`.
+- [#790](https://github.com/Automattic/VIP-Coding-Standards/pull/790): PHPUnit: Use 7.5 schema.
+- [#791](https://github.com/Automattic/VIP-Coding-Standards/pull/791): Docs: Update `CONTRIBUTING.md`.
+
+
 ## [2.3.4] - 2023-07-05
 
 Props: kshaner, GaryJones, jrfnl, yolih
@@ -632,7 +802,9 @@ Initial release.
 
 Props: david-binda, pkevan.
 
-
+[3.1.0]: https://github.com/Automattic/VIP-Coding-Standards/compare/3.0.1...3.1.0
+[3.0.1]: https://github.com/Automattic/VIP-Coding-Standards/compare/3.0.0...3.0.1
+[3.0.0]: https://github.com/Automattic/VIP-Coding-Standards/compare/2.3.4...3.0.0
 [2.3.4]: https://github.com/Automattic/VIP-Coding-Standards/compare/2.3.3...2.3.4
 [2.3.3]: https://github.com/Automattic/VIP-Coding-Standards/compare/2.3.2...2.3.3
 [2.3.2]: https://github.com/Automattic/VIP-Coding-Standards/compare/2.3.1...2.3.2

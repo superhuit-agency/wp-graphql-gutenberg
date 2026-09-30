@@ -4,24 +4,23 @@
  *
  * @package VIPCS\WordPressVIPMinimum
  * @link https://github.com/Automattic/VIP-Coding-Standards
+ * @license https://opensource.org/license/gpl-2-0 GPL-2.0
  */
 
 namespace WordPressVIPMinimum\Sniffs\Security;
 
-use WordPressVIPMinimum\Sniffs\Sniff;
 use PHP_CodeSniffer\Util\Tokens;
+use WordPressVIPMinimum\Sniffs\Sniff;
 
 /**
  * Require `exit;` being called after wp_redirect and wp_safe_redirect.
- *
- *  @package VIPCS\WordPressVIPMinimum
  */
 class ExitAfterRedirectSniff extends Sniff {
 
 	/**
 	 * Returns an array of tokens this test wants to listen for.
 	 *
-	 * @return array
+	 * @return array<int|string>
 	 */
 	public function register() {
 		return [ T_STRING ];

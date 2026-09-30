@@ -1,10 +1,13 @@
 <?xml version="1.0"?>
-<ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="WordPress-VIP-Go" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/squizlabs/PHP_CodeSniffer/master/phpcs.xsd">
+<ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="WordPress-VIP-Go" xsi:noNamespaceSchemaLocation="https://schema.phpcodesniffer.com/phpcs.xsd">
 	<description>WordPress VIP Go Coding Standards</description>
 
 	<!-- The rules below are the changes from between the original sniff or parent ruleset, and what should be applied for this Standard. -->
 	<!-- Include the base VIP Minimum ruleset -->
-	<rule ref="WordPressVIPMinimum"/>
+	<rule ref="WordPressVIPMinimum">
+		<exclude name="WordPressVIPMinimum.JS"/>
+		<exclude name="WordPressVIPMinimum.Functions.DynamicCalls"/>
+	</rule>
 
 	<!-- Things that may be incompatible with the VIP Go infrastructure and needs a dev to review -->
 	<rule ref="WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_file_put_contents">
@@ -104,7 +107,7 @@
 		 This includes potential security holes as well as functions that may bring down sites for performance reasons.
 	 -->
 	<!-- Should fix all of them but it doesn't need a manual review -->
-	<rule ref="WordPress.WP.AlternativeFunctions.file_system_read_fopen">
+	<rule ref="WordPress.WP.AlternativeFunctions.file_system_operations_fopen">
 		<message>File system operations only work on the `/tmp/` and `wp-content/uploads/` directories. To avoid unexpected results, please use helper functions like `get_temp_dir()`  or `wp_get_upload_dir()` to get the proper directory path when using functions such as %s(). For more details, please see: https://docs.wpvip.com/technical-references/vip-go-files-system/local-file-operations/</message>
 	</rule>
 	<rule ref="WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown">
@@ -152,10 +155,6 @@
 	<rule ref="WordPressVIPMinimum.Functions.RestrictedFunctions.get_adjacent_post_get_next_post_link">
 		<type>warning</type>
 	</rule>
-	<rule ref="WordPressVIPMinimum.Functions.RestrictedFunctions.get_page_by_title_get_page_by_title">
-		<type>warning</type>
-		<message>%s() is uncached, please use wpcom_vip_get_page_by_title() instead.</message>
-	</rule>
 	<rule ref="WordPressVIPMinimum.Functions.RestrictedFunctions.get_posts_get_children">
 		<type>warning</type>
 		<severity>3</severity>
@@ -179,7 +178,10 @@
 	<rule ref="Internal.LineEndings.Mixed">
 		<severity>1</severity>
 	</rule>
-	<rule ref="WordPress.CodeAnalysis.AssignmentInCondition.Found">
+	<rule ref="Generic.CodeAnalysis.AssignmentInCondition">
+		<severity>1</severity>
+	</rule>
+	<rule ref="WordPress.CodeAnalysis.AssignmentInTernaryCondition.FoundInTernaryCondition">
 		<severity>1</severity>
 	</rule>
 	<rule ref="WordPress.PHP.DiscouragedPHPFunctions.urlencode_urlencode">
@@ -188,7 +190,7 @@
 	<rule ref="WordPress.PHP.DontExtract">
 		<severity>3</severity>
 	</rule>
-	<rule ref="WordPress.PHP.StrictComparisons.LooseComparison">
+	<rule ref="Universal.Operators.StrictComparisons">
 		<severity>3</severity>
 	</rule>
 	<rule ref="WordPress.PHP.StrictInArray.MissingTrueStrict">
@@ -243,18 +245,16 @@
 		<!-- We are silencing this one because VIP Go has a combined index on meta_key, meta_value-->
 		<severity>0</severity>
 	</rule>
-	<rule ref="WordPressVIPMinimum.Performance.BatcacheWhitelistedParams">
-		<!-- We are silencing this one because VIP Go does not use Batcache-->
-		<severity>0</severity>
-	</rule>
 	<rule ref="Generic.PHP.DisallowShortOpenTag.EchoFound">
 		<severity>0</severity>
 	</rule>
-	<rule ref="WordPress.WP.AlternativeFunctions.file_system_read_readfile">
+	<rule ref="WordPress.WP.AlternativeFunctions.file_system_operations_readfile">
 		<severity>0</severity>
 	</rule>
-	<rule ref="WordPress.WP.AlternativeFunctions.file_system_read_fclose">
+	<rule ref="WordPress.WP.AlternativeFunctions.file_system_operations_fclose">
 		<severity>0</severity>
 	</rule>
-
+	<rule ref="WordPress.Security.EscapeOutput.ExceptionNotEscaped">
+		<severity>0</severity>
+	</rule>
 </ruleset>

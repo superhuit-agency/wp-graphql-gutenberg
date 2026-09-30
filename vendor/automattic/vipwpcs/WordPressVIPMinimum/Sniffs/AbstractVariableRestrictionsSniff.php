@@ -4,19 +4,21 @@
  *
  * @package VIPCS\WordPressVIPMinimum
  * @link https://github.com/Automattic/VIP-Coding-Standards
+ * @license https://opensource.org/license/gpl-2-0 GPL-2.0
  * @license https://opensource.org/licenses/MIT MIT
  */
 
 namespace WordPressVIPMinimum\Sniffs;
 
-use WordPressVIPMinimum\Sniffs\Sniff;
+use PHPCSUtils\Utils\GetTokensAsString;
+use PHPCSUtils\Utils\MessageHelper;
+use WordPressCS\WordPress\Helpers\ContextHelper;
+use WordPressCS\WordPress\Helpers\RulesetPropertyHelper;
 
 /**
  * Restricts usage of some variables.
  *
  * Originally part of WordPress Coding Standards repo.
- *
- * @package VIPCS\WordPressVIPMinimum
  */
 abstract class AbstractVariableRestrictionsSniff extends Sniff {
 
@@ -57,7 +59,7 @@ abstract class AbstractVariableRestrictionsSniff extends Sniff {
 	/**
 	 * Returns an array of tokens this test wants to listen for.
 	 *
-	 * @return array
+	 * @return array<int|string>
 	 */
 	public function register() {
 		// Retrieve the groups only once and don't set up a listener if there are no groups.
@@ -90,7 +92,7 @@ abstract class AbstractVariableRestrictionsSniff extends Sniff {
 	 *  )
 	 * )
 	 *
-	 * @return array
+	 * @return array<string, array<string, string|array<string>>>
 	 */
 	abstract public function getGroups();
 
@@ -120,14 +122,12 @@ abstract class AbstractVariableRestrictionsSniff extends Sniff {
 	 * @param int $stackPtr The position of the current token in the stack.
 	 * @return int|void Integer stack pointer to skip forward or void to continue
 	 *                  normal file processing.
-	 *
-	 * @throws \PHP_CodeSniffer\Exceptions\RuntimeException Exception.
 	 */
 	public function process_token( $stackPtr ) {
 
 		$token = $this->tokens[ $stackPtr ];
 
-		$this->excluded_groups = static::merge_custom_array( $this->exclude );
+		$this->excluded_groups = RulesetPropertyHelper::merge_custom_array( $this->exclude );
 		if ( array_diff_key( $this->groups_cache, $this->excluded_groups ) === [] ) {
 			// All groups have been excluded.
 			// Don't remove the listener as the exclude property can be changed inline.
@@ -143,7 +143,7 @@ abstract class AbstractVariableRestrictionsSniff extends Sniff {
 			}
 		}
 
-		if ( $this->is_in_isset_or_empty( $stackPtr ) === true ) {
+		if ( ContextHelper::is_in_isset_or_empty( $this->phpcsFile, $stackPtr ) === true ) {
 			// Checking whether a variable exists is not the same as using it.
 			return;
 		}
@@ -179,7 +179,7 @@ abstract class AbstractVariableRestrictionsSniff extends Sniff {
 
 				if ( isset( $token['bracket_closer'] ) ) {
 					$owner  = $this->phpcsFile->findPrevious( \T_VARIABLE, $stackPtr );
-					$inside = $this->phpcsFile->getTokensAsString( $stackPtr, $token['bracket_closer'] - $stackPtr + 1 );
+					$inside = GetTokensAsString::normal( $this->phpcsFile, $stackPtr, $token['bracket_closer'] );
 					$var    = implode( '', [ $this->tokens[ $owner ]['content'], $inside ] );
 				}
 			}
@@ -200,11 +200,13 @@ abstract class AbstractVariableRestrictionsSniff extends Sniff {
 				continue;
 			}
 
-			$this->addMessage(
+			$code = MessageHelper::stringToErrorcode( $groupName . '_' . $match[1] );
+			MessageHelper::addMessage(
+				$this->phpcsFile,
 				$group['message'],
 				$stackPtr,
 				$group['type'] === 'error',
-				$this->string_to_errorcode( $groupName . '_' . $match[1] ),
+				$code,
 				[ $var ]
 			);
 

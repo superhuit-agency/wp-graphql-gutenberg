@@ -1,15 +1,35 @@
 <?xml version="1.0"?>
-<ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="WordPressVIPMinimum" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/squizlabs/PHP_CodeSniffer/master/phpcs.xsd">
+<ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="WordPressVIPMinimum" xsi:noNamespaceSchemaLocation="https://schema.phpcodesniffer.com/phpcs.xsd">
 	<description>WordPress VIP Minimum Coding Standards</description>
+
+	<!--
+		 Trigger error if PHPCSUtils cannot be found.
+		 PHPCSUtils does not contain any sniffs, so this rule isn't strictly necessary, but
+		 by having this here anyway, if PHPCSUtils is missing, the user will get a
+		 descriptive error message during the loading of the ruleset instead of
+		 a fatal "class not found" error once the sniffs start running.
+	-->
+	<rule ref="PHPCSUtils">
+		<!--
+		Exclude all JS specific sniffs. These are deprecated and should no longer be used.
+
+		Note: While this exclusion has nothing to do with PHPCSUtils, exclusions must be placed within a "rule"
+		and as all sniffs from WordPressVIPMinimum are automatically included, we don't have a WordPressVIPMinimum
+		rule in which to place the exclusion, so this will have to do for now.
+		-->
+		<exclude name="WordPressVIPMinimum.JS"/>
+
+		<!--
+		Exclude other deprecated sniffs.
+		-->
+		<exclude name="WordPressVIPMinimum.Functions.DynamicCalls"/>
+	</rule>
+
 	<rule ref="Generic.PHP.Syntax"/>
 	<rule ref="Generic.PHP.NoSilencedErrors">
 		<properties>
 			<property name="error" value="true"/>
 		</properties>
-	</rule>
-
-	<rule ref="WordPressVIPMinimum.Security.Twig">
-		<include-pattern>*.twig</include-pattern>
 	</rule>
 
 	<rule ref="WordPress.Security.EscapeOutput"/>
@@ -26,8 +46,11 @@
 	<rule ref="WordPress.DB.DirectDatabaseQuery"/>
 	<rule ref="WordPress.DB.SlowDBQuery"/>
 	<rule ref="WordPress.WP.GlobalVariablesOverride"/>
-	<rule ref="WordPress.PHP.StrictComparisons"/>
-	<rule ref="WordPress.CodeAnalysis.AssignmentInCondition"/>
+	<rule ref="Universal.Operators.StrictComparisons" phpcs-only="true">
+		<type>warning</type>
+	</rule>
+	<rule ref="Generic.CodeAnalysis.AssignmentInCondition"/>
+	<rule ref="WordPress.CodeAnalysis.AssignmentInTernaryCondition"/>
 	<rule ref="WordPress.PHP.StrictInArray"/>
 	<rule ref="WordPress.PHP.DontExtract"/>
 	<rule ref="WordPress.WP.CronInterval">
@@ -37,6 +60,7 @@
 		</properties>
 	</rule>
 
+	<rule ref="Generic.Files.ByteOrderMark"/>
 	<rule ref="Generic.VersionControl.GitMergeConflict"/>
 	<rule ref="Generic.NamingConventions.ConstructorName"/>
 	<rule ref="Generic.PHP.DisallowShortOpenTag"/>
@@ -45,10 +69,10 @@
 	<rule ref="Squiz.WhiteSpace.SuperfluousWhitespace">
 		<exclude name="Squiz.WhiteSpace.SuperfluousWhitespace.EmptyLines"/>
 		<exclude name="Squiz.WhiteSpace.SuperfluousWhitespace.EndLine"/>
-		<include-pattern>*.php</include-pattern>
-		<include-pattern>*.inc</include-pattern>
-		<exclude-pattern>*.js</exclude-pattern>
-		<exclude-pattern>*.css</exclude-pattern>
+		<include-pattern>*\.php</include-pattern>
+		<include-pattern>*\.inc</include-pattern>
+		<exclude-pattern>*\.js</exclude-pattern>
+		<exclude-pattern>*\.css</exclude-pattern>
 	</rule>
 	<rule ref="Squiz.PHP.CommentedOutCode"/>
 
@@ -122,10 +146,32 @@
 		<exclude name="WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents"/>
 		<!-- This is already covered in WordPressVIPMinimum.Functions.StripTags.StripTagsOneParameter -->
 		<exclude name="WordPress.WP.AlternativeFunctions.strip_tags_strip_tags"/>
-		<!-- This is already covered in WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_fwrite -->
-		<exclude name="WordPress.WP.AlternativeFunctions.file_system_read_fwrite"/>
 		<!-- This is already covered in WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_file_put_contents -->
-		<exclude name="WordPress.WP.AlternativeFunctions.file_system_read_file_put_contents"/>
+		<exclude name="WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents"/>
+		<!-- This is already covered in WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_fputs -->
+		<exclude name="WordPress.WP.AlternativeFunctions.file_system_operations_fputs"/>
+		<!-- This is already covered in WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_fwrite -->
+		<exclude name="WordPress.WP.AlternativeFunctions.file_system_operations_fwrite"/>
+		<!-- This is already covered in WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_is_writable -->
+		<exclude name="WordPress.WP.AlternativeFunctions.file_system_operations_is_writable"/>
+		<!-- This is already covered in WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_is_writeable -->
+		<exclude name="WordPress.WP.AlternativeFunctions.file_system_operations_is_writeable"/>
+		<!-- This is already covered in WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_rename -->
+		<exclude name="WordPress.WP.AlternativeFunctions.rename_rename"/>
+		<!-- This is already covered in WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_touch -->
+		<exclude name="WordPress.WP.AlternativeFunctions.file_system_operations_touch"/>
+		<!-- This is already covered in WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_unlink -->
+		<exclude name="WordPress.WP.AlternativeFunctions.unlink_unlink"/>
+		<!-- This is already covered in WordPressVIPMinimum.Functions.RestrictedFunctions.directory_mkdir -->
+		<exclude name="WordPress.WP.AlternativeFunctions.file_system_operations_mkdir"/>
+		<!-- This is already covered in WordPressVIPMinimum.Functions.RestrictedFunctions.directory_rmdir -->
+		<exclude name="WordPress.WP.AlternativeFunctions.file_system_operations_rmdir"/>
+		<!-- This is already covered in WordPressVIPMinimum.Functions.RestrictedFunctions.chmod_chgrp -->
+		<exclude name="WordPress.WP.AlternativeFunctions.file_system_operations_chgrp"/>
+		<!-- This is already covered in WordPressVIPMinimum.Functions.RestrictedFunctions.chmod_chown -->
+		<exclude name="WordPress.WP.AlternativeFunctions.file_system_operations_chown"/>
+		<!-- This is already covered in WordPressVIPMinimum.Functions.RestrictedFunctions.chmod_chmod -->
+		<exclude name="WordPress.WP.AlternativeFunctions.file_system_operations_chmod"/>
 	</rule>
 	<!-- VIP recommends other functions -->
 	<rule ref="WordPress.WP.AlternativeFunctions.curl_curl_init">
@@ -151,34 +197,6 @@
 			<property name="allowUnusedVariablesBeforeRequire" value="true"/>
 			<property name="allowUndefinedVariablesInFileScope" value="true"/>
 		</properties>
-	</rule>
-
-	<!-- Prevent deprecation notice when the sniff is not explicitly included. -->
-	<rule ref="WordPressVIPMinimum.Variables.VariableAnalysis.DeprecatedSniff">
-		<severity>0</severity>
-	</rule>
-
-	<!-- Prevent duplicate messages from deprecated sniff. -->
-	<rule ref="WordPressVIPMinimum.Variables.VariableAnalysis.VariableRedeclaration">
-		<severity>0</severity>
-	</rule>
-	<rule ref="WordPressVIPMinimum.Variables.VariableAnalysis.UndefinedVariable">
-		<severity>0</severity>
-	</rule>
-	<rule ref="WordPressVIPMinimum.Variables.VariableAnalysis.UnusedVariable">
-		<severity>0</severity>
-	</rule>
-	<rule ref="WordPressVIPMinimum.Variables.VariableAnalysis.SelfInsideClosure">
-		<severity>0</severity>
-	</rule>
-	<rule ref="WordPressVIPMinimum.Variables.VariableAnalysis.SelfOutsideClass">
-		<severity>0</severity>
-	</rule>
-	<rule ref="WordPressVIPMinimum.Variables.VariableAnalysis.StaticInsideClosure">
-		<severity>0</severity>
-	</rule>
-	<rule ref="WordPressVIPMinimum.Variables.VariableAnalysis.StaticOutsideClass">
-		<severity>0</severity>
 	</rule>
 
 </ruleset>
