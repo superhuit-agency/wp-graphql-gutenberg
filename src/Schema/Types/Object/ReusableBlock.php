@@ -3,6 +3,7 @@
 namespace WPGraphQLGutenberg\Schema\Types\Object;
 
 use WPGraphQLGutenberg\Blocks\Block;
+use WPGraphQLGutenberg\Blocks\BlocksJSON;
 use WPGraphQLGutenberg\Blocks\Registry;
 use WPGraphQLGutenberg\PostTypes\BlockEditorPreview;
 use WPGraphQLGutenberg\Schema\Utils;
@@ -69,12 +70,13 @@ class ReusableBlock {
 							$id = BlockEditorPreview::get_preview_id( $model->ID, $args['databaseId'] );
 
 							if ( ! empty( $id ) ) {
-								return wp_json_encode(
+								return BlocksJSON::encode_blocks(
 									Block::create_blocks(
 										parse_blocks( get_post( $id )->post_content ),
 										$id,
 										Registry::get_registry()
-									)
+									),
+									$model
 								);
 							}
 
