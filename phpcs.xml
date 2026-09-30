@@ -3,7 +3,7 @@
 	<description>Coding standards for the WPGraphQL plugin</description>
 
 	<!-- Configure the PHP version -->
-	<config name="testVersion" value="7.1-" />
+	<config name="testVersion" value="8.0-" />
 
 	<!-- Check against minimum WP version. -->
 	<config name="minimum_supported_wp_version" value="5.0" />
