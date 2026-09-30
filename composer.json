@@ -28,6 +28,12 @@
 	  "squizlabs/php_codesniffer": "^3.13.6"
 	},
 	"scripts": {
+		"post-install-cmd": [
+			"@composer dump-autoload --no-dev"
+		],
+		"post-update-cmd": [
+			"@composer dump-autoload --no-dev"
+		],
 		"phpcs-i": [
 			"@php ./vendor/bin/phpcs -i"
 		],

@@ -5,3 +5,14 @@ node_modules
 # dist/
 
 tests/_output
+
+# vendor/ is committed so the plugin works without Composer, but only with
+# runtime packages: dev tools (require-dev) stay local.
+/vendor/bin/
+/vendor/automattic/
+/vendor/dealerdirect/
+/vendor/phpcompatibility/
+/vendor/phpcsstandards/
+/vendor/sirbrillig/
+/vendor/squizlabs/
+/vendor/wp-coding-standards/

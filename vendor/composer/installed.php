@@ -3,7 +3,7 @@
         'name' => 'pristas-peter/wp-graphql-gutenberg',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => '593d85848d8b22fc58ff2010f44c2af2003a3d96',
+        'reference' => '3150bc7dba243c2a2e2cc21772df3b89259ba2ee',
         'type' => 'wordpress-plugin',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -85,7 +85,7 @@
         'pristas-peter/wp-graphql-gutenberg' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => '593d85848d8b22fc58ff2010f44c2af2003a3d96',
+            'reference' => '3150bc7dba243c2a2e2cc21772df3b89259ba2ee',
             'type' => 'wordpress-plugin',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
