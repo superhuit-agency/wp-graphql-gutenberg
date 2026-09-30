@@ -13,7 +13,7 @@
 	"config": {
 		"optimize-autoloader": true,
 		"platform": {
-		  "php": "7.3"
+		  "php": "8.0"
 		},
 		"process-timeout": 0,
 		"allow-plugins": {
@@ -37,6 +37,7 @@
 		]
 	},
 	"require": {
+		"php": ">=8.0",
 		"opis/json-schema": "^1.0",
 		"voku/simple_html_dom": "~4.8.10"
 	}

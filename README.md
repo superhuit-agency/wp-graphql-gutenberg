@@ -7,7 +7,7 @@ Query gutenberg blocks through wp-graphql
 
 ## Install
 
--   Requires PHP 7.0+
+-   Requires PHP 8.0+
 -   Requires wp-graphql 0.9.0+
 -   Requires WordPress 5.4+
 

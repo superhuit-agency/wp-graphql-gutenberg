@@ -6,8 +6,9 @@
  * Description: Enable blocks in WP GraphQL.
  * Author: pristas-peter
  * Author URI:
- * Version: 0.4.1
+ * Version: 0.5.0
  * Requires at least: 5.4
+ * Requires PHP: 8.0
  * License: GPL-3
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  */
@@ -52,7 +53,7 @@ if ( ! class_exists( 'WPGraphQLGutenberg' ) ) {
 		private function setup_constants() {
 			// // Plugin version.
 			if ( ! defined( 'WP_GRAPHQL_GUTENBERG_VERSION' ) ) {
-				define( 'WP_GRAPHQL_GUTENBERG_VERSION', '0.4.1' );
+				define( 'WP_GRAPHQL_GUTENBERG_VERSION', '0.5.0' );
 			}
 
 			// Plugin Folder Path.
