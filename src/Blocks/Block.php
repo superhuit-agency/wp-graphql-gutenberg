@@ -20,7 +20,9 @@ class Block implements ArrayAccess {
 	public mixed $get_parent;
 	public array $attributes;
 	public mixed $attributesType;
-	public mixed $dynamicContent;
+	public mixed $dynamicContent = null;
+	private array $data;
+	private bool $is_dynamic_content_rendered = false;
 
 
 	public static function create_blocks( $blocks, $post_id, $registry, $parent = null ) {
@@ -241,8 +243,31 @@ class Block implements ArrayAccess {
 		$this->attributes     = $result['attributes'];
 		$this->attributesType = $result['type'];
 
-		$this->dynamicContent = $this->render_dynamic_content( $data );
+		$this->data = $data;
+	}
 
+	/**
+	 * Server side render the block on first access only, since rendering every
+	 * dynamic block up front is costly and renders inner blocks out of their
+	 * parent's context (e.g. Interactivity API namespaces).
+	 *
+	 * Inner blocks are rendered first, as the former eager rendering did, so
+	 * counter-based ids (e.g. `accordion-item-1`) do not depend on the order
+	 * of the fields in the query.
+	 */
+	public function get_dynamic_content() {
+		if ( ! $this->is_dynamic_content_rendered ) {
+			foreach ( $this->innerBlocks as $inner_block ) {
+				$inner_block->get_dynamic_content();
+			}
+
+			$this->dynamicContent              = $this->render_dynamic_content( $this->data );
+			$this->is_dynamic_content_rendered = true;
+			// The parsed block is only needed to render.
+			$this->data = [];
+		}
+
+		return $this->dynamicContent;
 	}
 
 	private function render_dynamic_content( $data ) {
