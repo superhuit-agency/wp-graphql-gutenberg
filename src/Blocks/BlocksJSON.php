@@ -48,6 +48,9 @@ class BlocksJSON {
 		}
 
 		if ( is_object( $value ) ) {
+			// Objects are passed by handle: clone so the caller's blocks stay unfiltered.
+			$value = clone $value;
+
 			foreach ( get_object_vars( $value ) as $key => $item ) {
 				if ( in_array( $key, $properties, true ) ) {
 					unset( $value->$key );
@@ -72,8 +75,17 @@ class BlocksJSON {
 		 * @param mixed        $model      The model associated with the blocks being encoded.
 		 * @param mixed        $blocks     The original blocks payload before properties are removed.
 		 */
-		$properties      = apply_filters( 'graphql_gutenberg_blocks_json_filtered_properties', [], $model, $blocks );
-		$filtered_blocks = self::filter_properties( $blocks, self::sanitize_filtered_properties( $properties ) );
+		$properties = self::sanitize_filtered_properties(
+			apply_filters( 'graphql_gutenberg_blocks_json_filtered_properties', [], $model, $blocks )
+		);
+
+		if ( ! in_array( 'dynamicContent', $properties, true ) ) {
+			foreach ( $blocks as $block ) {
+				$block->get_dynamic_content();
+			}
+		}
+
+		$filtered_blocks = self::filter_properties( $blocks, $properties );
 
 		return wp_json_encode(
 			/**
