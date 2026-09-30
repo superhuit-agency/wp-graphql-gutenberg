@@ -64,6 +64,17 @@ class BlocksJSON {
 		return $value;
 	}
 
+	public static function encode_post_blocks( $post_id, $model ) {
+		return self::encode_blocks(
+			Block::create_blocks(
+				parse_blocks( get_post( $post_id )->post_content ),
+				$post_id,
+				Registry::get_registry()
+			),
+			$model
+		);
+	}
+
 	public static function encode_blocks( $blocks, $model ) {
 		/**
 		 * Filters the list of block properties to remove before encoding blocks as JSON.
