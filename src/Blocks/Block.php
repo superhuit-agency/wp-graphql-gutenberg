@@ -18,7 +18,7 @@ class Block implements ArrayAccess {
 	public ?int $order;
 	public mixed $parent;
 	public mixed $get_parent;
-	public array $attributes;
+	public ?array $attributes;
 	public mixed $attributesType;
 	public mixed $dynamicContent = null;
 	private array $data;
