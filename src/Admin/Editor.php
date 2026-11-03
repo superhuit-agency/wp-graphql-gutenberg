@@ -21,5 +21,12 @@ class Editor {
 		add_action('enqueue_block_editor_assets', function () {
 			self::enqueue_script();
 		});
+
+		// WordPress 7 isolates editor pages with Document-Isolation-Policy. In the iframe
+		// of the "Update block registry" button, that hides window.frameElement.
+		add_filter('wp_client_side_media_processing_enabled', function ( $enabled ) {
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput
+			return 'true' === ( $_GET['wpGraphqlGutenbergServer'] ?? '' ) ? false : $enabled;
+		});
 	}
 }
