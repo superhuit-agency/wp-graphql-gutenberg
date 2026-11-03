@@ -23,10 +23,11 @@ class Editor {
 		});
 
 		// WordPress 7 isolates editor pages with Document-Isolation-Policy. In the iframe
-		// of the "Update block registry" button, that hides window.frameElement.
+		// of the "Update block registry" button, that hides window.frameElement. The last
+		// priority keeps a theme or another plugin that enables this filter from undoing it.
 		add_filter('wp_client_side_media_processing_enabled', function ( $enabled ) {
 			// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput
-			return 'true' === ( $_GET['wpGraphqlGutenbergServer'] ?? '' ) ? false : $enabled;
-		});
+			return is_admin() && 'true' === ( $_GET['wpGraphqlGutenbergServer'] ?? '' ) ? false : $enabled;
+		}, PHP_INT_MAX);
 	}
 }
